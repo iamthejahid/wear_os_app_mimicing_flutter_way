@@ -16,19 +16,22 @@ class VolumeAndFav extends StatelessWidget {
               ? MainAxisAlignment.center
               : MainAxisAlignment.spaceBetween,
           children: [
-            const SizedBox(
+            SizedBox(
               height: 24,
               width: 24,
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  CircularProgressIndicator(
-                    value: 0.4,
-                    color: Colors.white,
-                    backgroundColor: Colors.grey,
-                    strokeWidth: 1.2,
-                  ),
-                  Icon(
+                  AmbientMode(builder: (context, mode, _) {
+                    bool isAmbient = mode == WearMode.ambient;
+                    return CircularProgressIndicator(
+                      value: 0.4,
+                      color: isAmbient ? Colors.transparent : Colors.white,
+                      backgroundColor: Colors.grey,
+                      strokeWidth: 1.2,
+                    );
+                  }),
+                  const Icon(
                     CupertinoIcons.speaker_2_fill,
                     color: Colors.grey,
                     size: 14,
