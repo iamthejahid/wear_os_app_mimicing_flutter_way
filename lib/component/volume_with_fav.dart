@@ -1,9 +1,46 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:wear/wear.dart';
+import 'package:wearable_rotary/wearable_rotary.dart';
 
-class VolumeAndFav extends StatelessWidget {
+class VolumeAndFav extends StatefulWidget {
   const VolumeAndFav({super.key});
+
+  @override
+  State<VolumeAndFav> createState() => _VolumeAndFavState();
+}
+
+class _VolumeAndFavState extends State<VolumeAndFav> {
+  late final StreamSubscription<RotaryEvent> rotarySubscription;
+  double volume = 25.0;
+
+  @override
+  void initState() {
+    rotarySubscription = rotaryEvents.listen(handleRotaryEvent);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    rotarySubscription.cancel();
+    super.dispose();
+  }
+
+  void handleRotaryEvent(RotaryEvent event) {
+    if (event.direction == RotaryDirection.clockwise) {
+      if (volume < 100) {
+        setState(() => volume++);
+      }
+    } else {
+      if (volume > 0) {
+        setState(
+          () => volume--,
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +62,7 @@ class VolumeAndFav extends StatelessWidget {
                   AmbientMode(builder: (context, mode, _) {
                     bool isAmbient = mode == WearMode.ambient;
                     return CircularProgressIndicator(
-                      value: 0.4,
+                      value: volume / 100,
                       color: isAmbient ? Colors.transparent : Colors.white,
                       backgroundColor: Colors.grey,
                       strokeWidth: 1.2,
